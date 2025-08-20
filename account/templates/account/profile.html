@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block content %}
+<h2>Your Profile</h2>
+<img src="{{ request.user.avatar_url }}" alt="{{ request.user.username }}'s avatar"
+    style="width: 100px; height: 100px; border-radius: 100%;">
+<p>
+    Name: {{ request.user.name }}
+</p>
+<p>Username: {{ request.user.username }}</p>
+<p>Bio: {{ request.user.bio }}</p>
+<p>Email: {{ request.user.email }}</p>
+
+{% endblock content %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Welcome to Slog</h1>
+A short for blog application made in django
+<p>Here you can share your thoughts and ideas with the world.</p>
+<!-- Login -->
+<a href="{% url 'login' %}">Login</a>
+{% endblock %}
