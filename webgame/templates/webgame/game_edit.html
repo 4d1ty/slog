@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit Game - {{ game.title }}
+{% endblock title %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Edit Game</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn-submit">Save Changes</button>
+    </form>
+
+    <p style="margin-top:1rem;">
+        <a href="{% url 'game_play' game.slug %}">← Back to Game</a>
+    </p>
+</div>
+{% endblock %}

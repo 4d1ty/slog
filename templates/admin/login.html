@@ -1,0 +1,131 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+<style>
+    /* static/admin/css/login.css */
+
+/* Center the login box and set a dark background */
+body.login {
+    background-color: #121212; /* A dark, almost black background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Style the main content area (the login box) */
+#content-main {
+    background-color: #1e1e1e; /* A slightly lighter shade of dark gray */
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); /* Adds a deep, soft shadow */
+    padding: 40px;
+    width: 350px;
+    text-align: center;
+    color: #f0f0f0; /* Light text for readability */
+}
+
+/* Style the Django administration title */
+#branding h1 {
+    color: #4a90e2; /* A modern blue color for the title */
+    font-weight: 600;
+}
+
+/* Style the page title in the tab */
+#content-title {
+    display: none; /* Hide the default content title for a cleaner look */
+}
+
+/* Button styling */
+.submit-row input[type="submit"],
+.github-login .button {
+    background-color: #4a90e2; /* Match the title color */
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-row input[type="submit"]:hover,
+.github-login .button:hover {
+    background-color: #357ABD; /* A slightly darker blue on hover */
+    transform: translateY(-2px);
+}
+</style>
+
+{% block title %}{% if form.errors %}{% translate "Error:" %} {% endif %}{{ block.super }}{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/login.css" %}">
+{{ form.media }}
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} login{% endblock %}
+
+{% block usertools %}{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content %}
+{% if form.errors and not form.non_field_errors %}
+<p class="errornote">
+{% blocktranslate count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktranslate %}
+</p>
+{% endif %}
+
+{% if form.non_field_errors %}
+{% for error in form.non_field_errors %}
+<p class="errornote">
+    {{ error }}
+</p>
+{% endfor %}
+{% endif %}
+
+<div id="content-main">
+
+{% if user.is_authenticated %}
+<p class="errornote">
+{% blocktranslate trimmed %}
+    You are authenticated as {{ username }}, but are not authorized to
+    access this page. Would you like to login to a different account?
+{% endblocktranslate %}
+</p>
+{% endif %}
+<!-- 
+<form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
+  <div class="form-row">
+    {{ form.username.errors }}
+    {{ form.username.label_tag }} {{ form.username }}
+  </div>
+  <div class="form-row">
+    {{ form.password.errors }}
+    {{ form.password.label_tag }} {{ form.password }}
+    <input type="hidden" name="next" value="{{ next }}">
+  </div>
+  {% url 'admin_password_reset' as password_reset_url %}
+  {% if password_reset_url %}
+  <div class="password-reset-link">
+    <a href="{{ password_reset_url }}">{% translate 'Forgotten your login credentials?' %}</a>
+  </div>
+  {% endif %}
+  <div class="submit-row">
+    <input type="submit" value="{% translate 'Log in' %}">
+</div>
+</form> -->
+<p>
+    Note: You will be redirected back to index after logging in.
+</p>
+<!-- Login with github -->
+<div class="github-login submit-row">
+  <a href="{% url 'github_login' %}?to={{ next }}" class="button">{% translate 'Log in with GitHub' %}</a>
+</div>
+
+{% endblock %}

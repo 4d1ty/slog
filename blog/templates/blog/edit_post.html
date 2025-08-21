@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Post{% endblock title %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Edit Post</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-submit">💾 Save Changes</button>
+        <a href="{% url 'post_detail' post.slug %}" class="btn-submit" style="background:#6c757d; margin-top:1rem; display:inline-block;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

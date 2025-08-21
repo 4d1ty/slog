@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Create a New Post
+{% endblock title %}
+
+{% block content %}
+<div class="form-container">
+    <h2>✍️ Create a New Post</h2>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="form-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="form-error">{{ field.errors|striptags }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-submit">🚀 Publish Post</button>
+    </form>
+</div>
+{% endblock %}

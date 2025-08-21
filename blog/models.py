@@ -1,5 +1,9 @@
 from django.db import models
+from django.utils.text import slugify
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from webgame.models import WebGame
+NOT_ALLOWED_SLUGS = ["admin", "login", "logout", "register", "create", "edit", "delete"]
 
 class Post(models.Model):
     """
@@ -8,12 +12,14 @@ class Post(models.Model):
     title = models.CharField(max_length=255, help_text="Title of the blog post")
     slug = models.SlugField(max_length=255, unique=True, help_text="Slug for the blog post")
     content = models.TextField(help_text="Content of the blog post")
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='posts', blank=True, help_text="Author of the post")
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='posts', help_text="Author of the post")
     created_at = models.DateTimeField(auto_now_add=True, help_text="Creation date and time of the post")
     updated_at = models.DateTimeField(auto_now=True, help_text="Last update date and time of the post")
     tags = models.ManyToManyField('Tag', blank=True, related_name='posts', help_text="Tags associated with the post")
     reactions = models.ManyToManyField('Reaction', blank=True, related_name='posts', help_text="Reactions to the post")
+    webgame = models.ForeignKey(WebGame, on_delete=models.SET_NULL, related_name='posts', help_text="Web game associated with the post", null=True, blank=True)
 
+    is_published = models.BooleanField(default=True, help_text="Whether the post is published or not")
     def __str__(self):
         return self.title
 
@@ -21,6 +27,15 @@ class Post(models.Model):
         verbose_name = "Blog Post"
         verbose_name_plural = "Blog Posts"
         ordering = ["-created_at"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        if self.slug in NOT_ALLOWED_SLUGS:
+            raise ValidationError(f"Slug '{self.slug}' is not allowed.")
 
 class Tag(models.Model):
     """
@@ -36,6 +51,11 @@ class Tag(models.Model):
         verbose_name = "Tag"
         verbose_name_plural = "Tags"
         ordering = ["name"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 
 class Comment(models.Model):

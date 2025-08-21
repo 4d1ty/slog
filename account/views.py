@@ -1,10 +1,10 @@
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, resolve_url
 import requests
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from .models import User
-
+from django.contrib import messages
 
 def login_view(request):
     """
@@ -34,6 +34,7 @@ def github_callback(request):
     """
     code = request.GET.get("code")
     if not code:
+        messages.error(request, "GitHub login failed.")
         return redirect("login")
 
     # Exchange the code for an access token
@@ -48,6 +49,7 @@ def github_callback(request):
     access_token = response_data.get("access_token")
 
     if not access_token:
+        messages.error(request, "GitHub login failed.")
         return redirect("login")
 
     # Use the access token to get the user's information
@@ -59,19 +61,15 @@ def github_callback(request):
     # Log the user in or create a new account
     user, created = User.objects.get_or_create(
         uid=user_data["id"],
-        defaults={
-            "email": user_data["email"],
-            "name": user_data["name"],
-            "access_token": access_token
-        }
     )
+    user.access_token = access_token
 
     if created:
         user.set_unusable_password()
-    login(request, user)
 
     user.update_user_profile()
-
+    login(request, user)
+    messages.success(request, "GitHub login successful.")
     return redirect("home")
 
 
@@ -80,4 +78,6 @@ def profile_view(request):
     """
     Render the user's profile page.
     """
-    return render(request, "account/profile.html")
+    games = request.user.webgames.all()
+    posts = request.user.posts.all()
+    return render(request, "account/profile.html", {"games": games, "posts": posts})

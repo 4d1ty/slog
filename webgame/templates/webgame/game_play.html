@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ game.title }}
+{% endblock title %}
+
+{% block content %}
+    <h1>{{ game.title }}</h1>
+    <p>{{ game.description }}</p>
+
+    {% if game.source %}
+        <!-- Open game in a new tab -->
+        <a href="{{ game.source }}" target="_blank" class="btn-submit" style="text-align:center; display:inline-block; margin-top:1rem;">
+            ▶️ Play Game
+        </a>
+    {% else %}
+        <p>Game is not available at the moment.</p>
+    {% endif %}
+
+    <!-- connected blog -->
+    <h2>Related Blog Posts</h2>
+    <ul>
+        {% for post in game.posts.all %}
+            <li>
+                <a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a>
+            </li>
+        {% empty %}
+            <li>No related blog posts found.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

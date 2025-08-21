@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Upload a New Game
+{% endblock title %}
+
+{% block content %}
+<div class="form-container">
+    <h2>🎮 Upload a Web Game</h2>
+    <p>Upload a ZIP file containing your game files or provide a URL to your hosted game.</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <div class="form-error">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-submit">Upload Game</button>
+    </form>
+</div>
+{% endblock %}

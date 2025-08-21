@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Delete Game - {{ game.title }}
+{% endblock title %}
+
+{% block content %}
+<div class="form-container" style="text-align:center;">
+    <h2>Delete Game</h2>
+
+    <p>Are you sure you want to delete <strong>{{ game.title }}</strong>?</p>
+    <p>This action cannot be undone and will remove all uploaded assets.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn-submit" style="background:#dc3545;">Yes, Delete</button>
+        <a href="{% url 'game_play' game.slug %}" class="btn-submit" style="background:#6c757d; margin-left:0.5rem;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

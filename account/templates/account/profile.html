@@ -3,14 +3,74 @@
 {% block title %}Profile{% endblock title %}
 
 {% block content %}
-<h2>Your Profile</h2>
-<img src="{{ request.user.avatar_url }}" alt="{{ request.user.username }}'s avatar"
-    style="width: 100px; height: 100px; border-radius: 100%;">
-<p>
-    Name: {{ request.user.name }}
-</p>
-<p>Username: {{ request.user.username }}</p>
-<p>Bio: {{ request.user.bio }}</p>
-<p>Email: {{ request.user.email }}</p>
+<div class="form-container" style="text-align:center;">
+    <h2>Your Profile</h2>
+    
+    {% if request.user.avatar_url %}
+        <img src="{{ request.user.avatar_url }}" alt="{{ request.user.username }}'s avatar"
+            style="width:120px; height:120px; border-radius:50%; margin-bottom:1rem; border:2px solid #ddd;">
+    {% else %}
+        <div style="width:120px; height:120px; border-radius:50%; background:#ccc; display:inline-block; margin-bottom:1rem;"></div>
+    {% endif %}
 
-{% endblock content %}
+    <div style="text-align:left; margin-top:1rem;">
+        <p><strong>Name:</strong> {{ request.user.name|default:"N/A" }}</p>
+        <p><strong>Username:</strong> {{ request.user.username }}</p>
+        <p><strong>Bio:</strong> {{ request.user.bio|default:"N/A" }}</p>
+        <p><strong>Email:</strong> {{ request.user.email|default:"N/A" }}</p>
+    </div>
+
+    <p style="margin-top:1.5rem; font-style:italic; font-size:0.9rem;">
+        To change your profile information, please update it via GitHub and relogin.
+    </p>
+</div>
+
+<hr>
+
+<div class="container">
+    <h3>📝 Your Posts</h3>
+    {% if posts %}
+        <ul class="list-group mb-4">
+            {% for post in posts %}
+                <li class="list-group-item">
+                    <a href="{% url 'post_detail' post.slug %}"><strong>{{ post.title }}</strong></a>
+                    <br>
+                    <small>Created on {{ post.created_at|date:"M d, Y" }}</small>
+                    <p>{{ post.content|truncatewords:20 }}</p>
+                    <br>
+                    <a href="{% url 'edit_post' post.slug %}" class="btn-submit" style="background:#007BFF; margin-right:0.5rem;">✏️ Edit</a>
+                    <a href="{% url 'delete_post' post.slug %}" class="btn-submit" style="background:#dc3545;">🗑️ Delete</a>
+                </li>
+                <br>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't written any posts yet.</p>
+    {% endif %}
+
+    <h3>🎮 Your Uploaded Games</h3>
+    {% if games %}
+        <div class="row">
+            {% for game in games %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ game.title }}</h5>
+                            <p class="card-text">{{ game.description|truncatewords:15 }}</p>
+                            {% if game.source %}
+                                <a href="{{ game.source }}" target="_blank" class="btn-submit" style="background:#28a745; margin-right:0.5rem;">▶ Play</a>
+                            {% else %}
+                                <span class="text-muted">Not available</span>
+                            {% endif %}
+                            <a href="{% url 'game_edit' game.slug %}" class="btn-submit" style="background:#007BFF; margin-right:0.5rem;">✏️ Edit</a>
+                            <a href="{% url 'game_delete' game.slug %}" class="btn-submit" style="background:#dc3545;">🗑️ Delete</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't uploaded any games yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

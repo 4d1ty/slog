@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Games{% endblock title %}
+
+{% block content %}
+    <h1>🎮 Games</h1>
+    <p>Explore and play web games uploaded by users.</p>
+
+    {% if games %}
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+            {% for game in games %}
+                <div style="flex: 1 1 300px; background: #fff; border-radius: 8px; padding: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                    <h3>{{ game.title }}</h3>
+                    <p>{{ game.description|truncatewords:20 }}</p>
+                    {% if game.source %}
+                        <a href="{{ game.source }}" target="_blank" class="btn-submit" style="display:inline-block; margin-top:0.5rem;">Play</a>
+                    {% else %}
+                        <span style="color:#777;">Not available</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No games have been uploaded yet. Be the first to upload one!</p>
+    {% endif %}
+{% endblock %}

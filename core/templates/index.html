@@ -1,9 +1,59 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Welcome to Slog
+{% endblock title %}
+
 {% block content %}
-<h1>Welcome to Slog</h1>
-A short for blog application made in django
-<p>Here you can share your thoughts and ideas with the world.</p>
-<!-- Login -->
-<a href="{% url 'login' %}">Login</a>
+<div class="">
+    <h1>Welcome to <strong>Slog</strong></h1>
+    <p class="lead">
+        A short blog application made in Django.<br>
+        Share your thoughts, ideas, and even mini web games with the world 🚀
+    </p>
+
+    {% if request.user.is_authenticated %}
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:2rem;">
+            <a href="{% url 'create_post' %}" class="btn-submit">✍️ Create Post</a>
+            <a href="{% url 'game_upload' %}" class="btn-submit" style="background:#28a745;">🎮 Upload Game</a>
+        </div>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn-submit" style="margin-bottom:2rem;">Login</a>
+    {% endif %}
+
+    <hr>
+
+    <h2>📝 Recent Posts</h2>
+    {% if posts %}
+        <div style="display:flex; flex-direction:column; gap:1.5rem; margin-bottom:2rem;">
+            {% for post in posts %}
+                <div style="border:1px solid #ddd; border-radius:8px; padding:1rem; background:#fff;">
+                    <a href="{% url 'post_detail' post.slug %}" style="font-weight:bold; font-size:1.1rem;">{{ post.title }}</a>
+                    <br>
+                    <small>by {{ post.author.username }} on {{ post.created_at|date:"M d, Y" }}</small>
+                    <p>{{ post.content|truncatewords:20 }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <a href="{% url 'public_post_list' %}" class="btn-submit" style="background:transparent;color:#007BFF;border:1px solid #007BFF;">View all posts →</a>
+    {% else %}
+        <p>No posts yet. Be the first to share something!</p>
+    {% endif %}
+
+    <h2>🎮 Featured Games</h2>
+    {% if games %}
+        <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:2rem;">
+            {% for game in games %}
+                <div style="flex:1 1 250px; border:1px solid #ddd; border-radius:8px; padding:1rem; background:#fff;">
+                    <h3>{{ game.title }}</h3>
+                    <p>{{ game.description|truncatewords:15 }}</p>
+                    <a href="{% url 'game_play' game.slug %}" class="btn-submit" style="background:transparent;color:#007BFF;border:1px solid #007BFF;">Play</a>
+                </div>
+            {% endfor %}
+        </div>
+        <a href="{% url 'game_list' %}" class="btn-submit" style="background:transparent;color:#007BFF;border:1px solid #007BFF;">Explore all games →</a>
+    {% else %}
+        <p>No games uploaded yet. Try uploading your first one!</p>
+    {% endif %}
+</div>
 {% endblock %}

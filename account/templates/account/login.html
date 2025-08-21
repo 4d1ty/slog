@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Login
+    Login
 {% endblock title %}
-    
 
 {% block content %}
-    <!-- Login with github -->
-    <a href="{% url 'github_login' %}">Login with GitHub</a>
+<div class="form-container">
+    <h2>🔑 Login</h2>
+    <p style="text-align:center; margin-bottom:1.5rem;">Sign in using your GitHub account</p>
+
+    <a href="{% url 'github_login' %}" class="btn-submit" style="text-align:center; display:block; text-decoration:none; background-color: black;">
+        Login with GitHub 😺
+    </a>
+</div>
 {% endblock content %}
-    

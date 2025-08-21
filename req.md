@@ -1,0 +1,15 @@
+asgiref==3.9.1
+bleach==6.2.0
+certifi==2025.8.3
+charset-normalizer==3.4.3
+Django==5.2.5
+django-environ==0.12.0
+idna==3.10
+Markdown==3.8.2
+pymdown-extensions==10.16.1
+PyYAML==6.0.2
+requests==2.32.5
+sqlparse==0.5.3
+tzdata==2025.2
+urllib3==2.5.0
+webencodings==0.5.1
